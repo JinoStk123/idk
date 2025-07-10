@@ -1,12 +1,12 @@
-package me.alpha432.oyvey.features.modules.client;
+package me.alpha432.gaps.features.modules.client; // Đã đổi package thành gaps
 
 import com.google.common.eventbus.Subscribe;
-import me.alpha432.oyvey.OyVey;
-import me.alpha432.oyvey.event.impl.ClientEvent;
-import me.alpha432.oyvey.features.commands.Command;
-import me.alpha432.oyvey.features.gui.OyVeyGui;
-import me.alpha432.oyvey.features.modules.Module;
-import me.alpha432.oyvey.features.settings.Setting;
+import me.alpha432.gaps.Gaps; // Đã đổi import từ OyVey sang Gaps
+import me.alpha432.gaps.event.impl.ClientEvent;
+import me.alpha432.gaps.features.commands.Command;
+import me.alpha432.gaps.features.gui.GapsGui; // Đã đổi OyVeyGui sang GapsGui
+import me.alpha432.gaps.features.modules.Module;
+import me.alpha432.gaps.features.settings.Setting;
 import net.minecraft.util.Formatting;
 import org.lwjgl.glfw.GLFW;
 
@@ -26,7 +26,7 @@ public class ClickGui
     public Setting<Integer> rainbowHue = num("Delay", 240, 0, 600);
     public Setting<Float> rainbowBrightness = num("Brightness ", 150.0f, 1.0f, 255.0f);
     public Setting<Float> rainbowSaturation = num("Saturation", 150.0f, 1.0f, 255.0f);
-    private OyVeyGui click;
+    private GapsGui click; // Đã đổi OyVeyGui sang GapsGui
 
     public ClickGui() {
         super("ClickGui", "Opens the ClickGui", Module.Category.CLIENT, true, false, false);
@@ -52,10 +52,10 @@ public class ClickGui
     public void onSettingChange(ClientEvent event) {
         if (event.getStage() == 2 && event.getSetting().getFeature().equals(this)) {
             if (event.getSetting().equals(this.prefix)) {
-                OyVey.commandManager.setPrefix(this.prefix.getPlannedValue());
-                Command.sendMessage("Prefix set to " + Formatting.DARK_GRAY + OyVey.commandManager.getPrefix());
+                Gaps.commandManager.setPrefix(this.prefix.getPlannedValue()); // Đã đổi OyVey.commandManager sang Gaps.commandManager
+                Command.sendMessage("Prefix set to " + Formatting.DARK_GRAY + Gaps.commandManager.getPrefix()); // Đã đổi OyVey.commandManager sang Gaps.commandManager
             }
-            OyVey.colorManager.setColor(this.red.getPlannedValue(), this.green.getPlannedValue(), this.blue.getPlannedValue(), this.hoverAlpha.getPlannedValue());
+            Gaps.colorManager.setColor(this.red.getPlannedValue(), this.green.getPlannedValue(), this.blue.getPlannedValue(), this.hoverAlpha.getPlannedValue()); // Đã đổi OyVey.colorManager sang Gaps.colorManager
         }
     }
 
@@ -64,18 +64,18 @@ public class ClickGui
         if (fullNullCheck()) {
             return;
         }
-        mc.setScreen(OyVeyGui.getClickGui());
+        mc.setScreen(GapsGui.getClickGui()); // Đã đổi OyVeyGui.getClickGui() sang GapsGui.getClickGui()
     }
 
     @Override
     public void onLoad() {
-        OyVey.colorManager.setColor(this.red.getValue(), this.green.getValue(), this.blue.getValue(), this.hoverAlpha.getValue());
-        OyVey.commandManager.setPrefix(this.prefix.getValue());
+        Gaps.colorManager.setColor(this.red.getValue(), this.green.getValue(), this.blue.getValue(), this.hoverAlpha.getValue()); // Đã đổi OyVey.colorManager sang Gaps.colorManager
+        Gaps.commandManager.setPrefix(this.prefix.getValue()); // Đã đổi OyVey.commandManager sang Gaps.commandManager
     }
 
     @Override
     public void onTick() {
-        if (!(ClickGui.mc.currentScreen instanceof OyVeyGui)) {
+        if (!(ClickGui.mc.currentScreen instanceof GapsGui)) { // Đã đổi OyVeyGui sang GapsGui
             this.disable();
         }
     }
