@@ -1,9 +1,9 @@
-package me.alpha432.oyvey.features.modules.combat;
+package me.alpha432.gaps.features.modules.combat; // Đã đổi package thành gaps
 
 import com.google.common.eventbus.Subscribe;
-import me.alpha432.oyvey.event.impl.PacketEvent;
-import me.alpha432.oyvey.features.modules.Module;
-import me.alpha432.oyvey.util.models.Timer;
+import me.alpha432.gaps.event.impl.PacketEvent; // Đã đổi import từ oyvey.event sang gaps.event
+import me.alpha432.gaps.features.modules.Module; // Đã đổi import từ oyvey.features sang gaps.features
+import me.alpha432.gaps.util.models.Timer; // Đã đổi import từ oyvey.util sang gaps.util
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.decoration.EndCrystalEntity;
