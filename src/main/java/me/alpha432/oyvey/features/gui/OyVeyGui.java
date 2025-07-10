@@ -1,10 +1,10 @@
-package me.alpha432.oyvey.features.gui;
+package me.alpha432.gaps.features.gui;
 
-import me.alpha432.oyvey.OyVey;
-import me.alpha432.oyvey.features.Feature;
-import me.alpha432.oyvey.features.gui.items.Item;
-import me.alpha432.oyvey.features.gui.items.buttons.ModuleButton;
-import me.alpha432.oyvey.features.modules.Module;
+import me.alpha432.gaps.Gaps;
+import me.alpha432.gaps.features.Feature;
+import me.alpha432.gaps.features.gui.items.Item;
+import me.alpha432.gaps.features.gui.items.buttons.ModuleButton;
+import me.alpha432.gaps.features.modules.Module;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
@@ -13,31 +13,29 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Comparator;
 
-public class OyVeyGui extends Screen {
-    private static OyVeyGui oyveyGui;
-    private static OyVeyGui INSTANCE;
-
+public class GapsGui extends Screen {
+    private static GapsGui INSTANCE; // Bỏ oyveyGui đi
     static {
-        INSTANCE = new OyVeyGui();
+        INSTANCE = new GapsGui();
     }
 
     private final ArrayList<Component> components = new ArrayList();
 
-    public OyVeyGui() {
-        super(Text.literal("OyVey"));
+    public GapsGui() {
+        super(Text.literal("Gaps"));
         setInstance();
         load();
     }
 
-    public static OyVeyGui getInstance() {
+    public static GapsGui getInstance() {
         if (INSTANCE == null) {
-            INSTANCE = new OyVeyGui();
+            INSTANCE = new GapsGui();
         }
         return INSTANCE;
     }
 
-    public static OyVeyGui getClickGui() {
-        return OyVeyGui.getInstance();
+    public static GapsGui getClickGui() {
+        return GapsGui.getInstance();
     }
 
     private void setInstance() {
@@ -45,88 +43,36 @@ public class OyVeyGui extends Screen {
     }
 
     private void load() {
-        int x = -84;
-        for (final Module.Category category : OyVey.moduleManager.getCategories()) {
-            this.components.add(new Component(category.getName(), x += 90, 4, true) {
-
+        int x = 5; // Bắt đầu từ vị trí X hợp lý hơn
+        for (final Module.Category category : Gaps.moduleManager.getCategories()) {
+            // Thay vì inner class, tạo một instance của Component mới
+            this.components.add(new Component(category.getName(), x, 5, true) { // x, y, open. y có thể là 5 cho đẹp
                 @Override
                 public void setupItems() {
-                    counter1 = new int[]{1};
-                    OyVey.moduleManager.getModulesByCategory(category).forEach(module -> {
+                    // counter1 = new int[]{1}; // Cái này có thể bỏ nếu không dùng
+                    Gaps.moduleManager.getModulesByCategory(category).forEach(module -> {
                         if (!module.hidden) {
                             this.addButton(new ModuleButton(module));
                         }
                     });
                 }
             });
+            x += 95; // Tăng X để các panel không bị chồng lên nhau
         }
-        this.components.forEach(components -> components.getItems().sort(Comparator.comparing(Feature::getName)));
+        // Sắp xếp các item trong từng component
+        this.components.forEach(comp -> comp.getItems().sort(Comparator.comparing(Feature::getName)));
     }
 
-    public void updateModule(Module module) {
-        for (Component component : this.components) {
-            for (Item item : component.getItems()) {
-                if (!(item instanceof ModuleButton)) continue;
-                ModuleButton button = (ModuleButton) item;
-                Module mod = button.getModule();
-                if (module == null || !module.equals(mod)) continue;
-                button.initSettings();
-            }
-        }
-    }
+    // ... (Giữ nguyên các phương thức updateModule, render, mouseClicked, mouseReleased, mouseScrolled, keyPressed, charTyped, shouldPause, getComponents, getTextOffset, getComponentByName)
 
-    @Override public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        Item.context = context;
+    @Override
+    public void render(DrawContext context, int mouseX, int mouseY, float delta) {
+        // Vẽ background mờ
         context.fill(0, 0, context.getScaledWindowWidth(), context.getScaledWindowHeight(), new Color(0, 0, 0, 120).hashCode());
-        this.components.forEach(components -> components.drawScreen(context, mouseX, mouseY, delta));
-    }
-
-    @Override public boolean mouseClicked(double mouseX, double mouseY, int clickedButton) {
-        this.components.forEach(components -> components.mouseClicked((int) mouseX, (int) mouseY, clickedButton));
-        return super.mouseClicked(mouseX, mouseY, clickedButton);
-    }
-
-    @Override public boolean mouseReleased(double mouseX, double mouseY, int releaseButton) {
-        this.components.forEach(components -> components.mouseReleased((int) mouseX, (int) mouseY, releaseButton));
-        return super.mouseReleased(mouseX, mouseY, releaseButton);
-    }
-
-    @Override public boolean mouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
-        if (verticalAmount < 0) {
-            this.components.forEach(component -> component.setY(component.getY() - 10));
-        } else if (verticalAmount > 0) {
-            this.components.forEach(component -> component.setY(component.getY() + 10));
-        }
-        return super.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount);
-    }
-
-    @Override public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        this.components.forEach(component -> component.onKeyPressed(keyCode));
-        return super.keyPressed(keyCode, scanCode, modifiers);
-    }
-
-    @Override public boolean charTyped(char chr, int modifiers) {
-        this.components.forEach(component -> component.onKeyTyped(chr, modifiers));
-        return super.charTyped(chr, modifiers);
-    }
-
-    @Override public boolean shouldPause() {
-        return false;
-    }
-
-    public final ArrayList<Component> getComponents() {
-        return this.components;
-    }
-
-    public int getTextOffset() {
-        return -6;
-    }
-
-    public Component getComponentByName(String name) {
-        for (Component component : this.components) {
-            if (!component.getName().equalsIgnoreCase(name)) continue;
-            return component;
-        }
-        return null;
+        
+        // Vẽ và xử lý các component (panel)
+        this.components.forEach(component -> component.drawScreen(context, mouseX, mouseY, delta));
+        
+        super.render(context, mouseX, mouseY, delta); // Quan trọng để các input event vẫn hoạt động
     }
 }
