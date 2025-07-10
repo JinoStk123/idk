@@ -1,15 +1,15 @@
-package me.alpha432.oyvey.features.gui.items;
+package me.alpha432.gaps.features.gui.items; // Đã đổi package
 
-import me.alpha432.oyvey.features.Feature;
-import me.alpha432.oyvey.features.gui.Component;
-import me.alpha432.oyvey.features.gui.OyVeyGui;
+import me.alpha432.gaps.features.Feature; // Đã đổi import
+import me.alpha432.gaps.features.gui.Component; // Đã đổi import
+import me.alpha432.gaps.features.gui.GapsGui; // Đã đổi import từ OyVeyGui sang GapsGui
 import net.minecraft.client.gui.DrawContext;
 
 import java.awt.*;
 
-public class Item
+public class Item // Lớp này vẫn tên là Item
         extends Feature {
-    public static DrawContext context;
+    public static DrawContext context; // Static context này hơi "độc" nhưng nếu đang chạy được thì cứ để
     protected float x;
     protected float y;
     protected int width;
@@ -85,6 +85,6 @@ public class Item
     }
 
     public boolean isHovering(int mouseX, int mouseY) {
-        return false;
+        return mouseX >= getX() && mouseX <= getX() + getWidth() && mouseY >= getY() && mouseY <= getY() + getHeight();
     }
 }
